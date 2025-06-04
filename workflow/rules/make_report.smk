@@ -21,7 +21,7 @@ rule make_final_report:
         gsea_figs = directory(expand("results/make_final_report/extras/gsea_figures/{comp}", comp=pd.unique(comparisons["comparison_name"]))),
         gsea_tables = expand("results/make_final_report/extras/gsea_tables/{comp}/{collection}_gsea.xlsx", comp=pd.unique(comparisons["comparison_name"]), collection = config['pathway_str'].split(',')),
         multiqc = "results/make_final_report/external_reports/multiqc_report.html",
-        website = directory("results/make_final_report/BBC_RNAseq_Report"),
+        website = directory("docs"), # results/make_final_report/BBC_RNAseq_Report"),
         isee_rmd = "results/make_final_report/iSEE.Rmd",
     benchmark:
         "benchmarks/make_final_report/bench.txt"
@@ -33,7 +33,7 @@ rule make_final_report:
         gsea_yml = "\\n".join([f"        - text: {comp}\\n          href: gsea_{comp}.html" for comp in pd.unique(comparisons["comparison_name"])]),
         ext_reports_dir = lambda wildcards, output: os.path.dirname(output.multiqc),
         renv_rproj_dir = lambda wildcards, input: os.path.dirname(input.renv_lock),
-        root_dir = lambda wildcards, output: os.path.join(os.getcwd(), os.path.dirname(output.website)),
+        root_dir = lambda wildcards, output: os.path.join(os.getcwd(), os.path.dirname(output.multiqc_rmd)),
         de_res_outdir = lambda wildcards, input: os.path.dirname(os.path.dirname(input.de_res_figs[0])),
         gsea_dir = lambda wildcards, input: os.path.dirname(input.gsea[0]),
         isee_site_yml = "    - text: iSEE\\n      icon: fa-solid fa-gem\\n      href: isee.html" if config['deploy_to_shinyio'] else "",

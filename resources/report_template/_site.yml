@@ -1,5 +1,5 @@
 name: "BBC_RNAseq_Report"
-output_dir: "BBC_RNAseq_Report"
+output_dir: "../../docs"
 navbar:
   title: "<img id=\"logo\" style=\"width: 120px; vertical-align: middle; padding-top: 5px;\" src=\"images/VAI_2_Line_White.png\" />"
   # get more icons from https://fontawesome.com/
