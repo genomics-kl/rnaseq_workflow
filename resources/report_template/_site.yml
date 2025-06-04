@@ -1,0 +1,47 @@
+name: "BBC_RNAseq_Report"
+output_dir: "BBC_RNAseq_Report"
+navbar:
+  title: "<img id=\"logo\" style=\"width: 120px; vertical-align: middle; padding-top: 5px;\" src=\"images/VAI_2_Line_White.png\" />"
+  # get more icons from https://fontawesome.com/
+  left:
+    - text: "Home"
+      href: index.html
+      icon: fa-solid fa-house
+    - text: "MultiQC"
+      href: multiqc.html
+      icon: fa-square-poll-vertical
+    - text: "DE results"
+      icon: glyphicon-sort
+      menu:
+        - text: "HTML reports"
+<<<DE_RES>>>
+        - text: "---------"
+        - text: "Supplemental files"
+        - text: "High-res figures"
+          href: ./extras/deseq2_figures/
+        - text: "DE result tables"
+          href: ./extras/deseq2_tables/
+    - text: "GSEA results"
+      icon: glyphicon-signal
+      menu:
+        - text: "HTML reports"
+<<<GSEA_RES>>>
+        - text: "---------"
+        - text: "Supplemental files"
+        - text: "High-res figures"
+          href: ./extras/gsea_figures/
+        - text: "GSEA result tables"
+          href: ./extras/gsea_tables/
+<<<ISEE>>>
+  right:
+    - href: https://github.com/vari-bbc/rnaseq_workflow
+      icon: fa-github
+      text: Code
+output:
+  html_document:
+    self_contained: true
+    theme: bootstrap
+    css: styles.css
+    highlight: textmate
+    include:
+      after_body: footer.html

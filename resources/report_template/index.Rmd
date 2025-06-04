@@ -1,0 +1,79 @@
+---
+title: "RNA-seq analysis"
+
+bibliography: references.bib
+---
+
+This report summarizes the RNA-seq analysis performed using the [rnaseq_workflow](https://github.com/vari-bbc/rnaseq_workflow) developed by the Bioinformatics and Biostatistics Core at Van Andel Institute.
+
+The following sections describe the experimental design, summarize the differential expression results and analytical methods, and provide a list of software versions and references used in the analysis.
+
+For detailed results, please explore the individual tabs in the interactive report.
+
+<br>
+
+```{r load_lib, include=F, echo=F}
+library(configr)
+library(tidyverse)
+library(kableExtra)
+library(SummarizedExperiment)
+```
+
+## Experimental design
+
+We will list sample information for the experimental design below:
+
+```{r print_meta, include=T, echo=F, message=F, warning=F}
+se <- readRDS("../../results/SummarizedExperiment/SummarizedExperiment.rds")
+meta <- colData(se) |>
+        as.data.frame() |>
+        tibble::rownames_to_column("sample_name") |>
+        dplyr::select(-RG)
+
+meta |>
+    kbl(caption = "Sample information", row.names = FALSE) |>
+    kable_classic_2(full_width = F)
+```
+
+<br>
+
+## DE gene summary
+
+```{r deseq_sum,  include=T, echo=F, message=F, warning=F}
+config_file <- read.config("../../config/config.yaml")
+fdr <- config_file$fdr_cutoff
+comparisons <- list.files("../../results/deseq2/deseq2_out_files/")
+comparisons <- setNames(comparisons, nm = comparisons)
+
+de_sum_all <- do.call(rbind, (lapply(comparisons, function(comparison) {
+  de_res <- read_tsv(paste0("../../results/deseq2/deseq2_out_files/", comparison, "/de_res.tsv"))
+  df_sum <- data.frame( Contrast = comparison,
+              Num_up_genes = de_res |> filter(padj < fdr & log2FoldChange > 0) |> nrow(),
+              Num_down_genes = de_res |> filter(padj < fdr & log2FoldChange < 0) |> nrow())
+  return(df_sum)
+}) ) )
+
+de_sum_all |>
+  kbl(caption = paste0("DE gene summary (FDR cutoff = ", fdr, ")"), row.names = FALSE) |>
+   kable_classic_2(full_width = F)
+
+```
+
+<br>
+
+## Method summary
+
+Adaptor sequences and low-quality bases were trimmed from RNA-seq reads using Trim Galore. Trimmed reads were then aligned to refernece genome using STAR  with the "--quantMode GeneCounts" parameter enabled.
+
+Raw count data were input into DESeq2, where normalization was performed and dispersion estimates were then computed, and a generalized linear model was fit to test for differential expression. P-values were adjusted for multiple testing using the Benjamini–Hochberg method to control the false discovery rate (FDR). Genes with an adjusted p-value below 0.1 (default setup, you can change it in the config.yaml) were considered significantly differentially expressed. For more details about DESeq2 algorithms, please see [DESeq2 vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html).
+
+
+Gene set enrichment and pathway enrichment analyses and visualizations are performed using the R Bioconductor package clusterProfiler. For more details about ClusterProfiler, please see [clusterProfiler vignette](https://yulab-smu.top/biomedical-knowledge-mining-book/)
+
+<br>
+
+## Software versions and references
+
+---
+nocite: '@*'
+...
