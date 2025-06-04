@@ -1,5 +1,7 @@
 # Bulk RNAseq Workflow
 
+RNA-seq website demo deployed from this branch.
+
 * [Bulk RNAseq Workflow](#bulk-rnaseq-workflow)
    * [Usage](#usage)
       * [Step 1: Configure the workflow](#step-1-configure-the-workflow)
